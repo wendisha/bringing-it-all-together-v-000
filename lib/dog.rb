@@ -79,6 +79,16 @@ class Dog
   end
   
   def self.find_or_create_by(x)
+    sql = <<-SQL
+      SELECT *
+      FROM dogs 
+      WHERE x = ?
+      LIMIT 1
+    SQL
+    
+    DB[:conn].execute(sql, x).map do |row|
+      self.new_from_db(row)
+    end.first
   end 
   
   def update
